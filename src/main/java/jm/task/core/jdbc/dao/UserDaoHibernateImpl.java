@@ -13,34 +13,41 @@ import java.util.List;
 
 @SuppressWarnings("JpaQlInspection")
 public class UserDaoHibernateImpl implements UserDao {
-    static final private String url = "jdbc:mysql://localhost:3306/test";
-    static final private String user = "root";
-    static final private String password = "Lera5434";
     private SessionFactory factory = null;
-    static final private String table = "create table if not exists users(id serial primary key, name varchar(50),last_name varchar(100), age int);";
-    static final private String drop = "drop table if exists users;";
+    static private final String TABLE = "create table if not exists users(id serial primary key, name varchar(50),last_name varchar(100), age int);";
+    static final private String DROP = "drop table if exists users;";
 
     public UserDaoHibernateImpl() {
-        factory = Util.getConnectionHibernate(url, user, password);
+        factory = Util.getConnectionHibernate();
     }
 
     @Override
     public void createUsersTable() {
-        try (Connection connection = Util.getConnection(url, user, password);) {
-            PreparedStatement preparedStatement = connection.prepareStatement(table);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        Transaction transaction = null;
+        try (Session session = factory.openSession()) {
+            transaction = session.beginTransaction();
+            session.createSQLQuery(TABLE).executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Исключение:" + e);
         }
     }
 
     @Override
     public void dropUsersTable() {
-        try (Connection connection = Util.getConnection(url, user, password);) {
-            PreparedStatement preparedStatement = connection.prepareStatement(drop);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        Transaction transaction = null;
+        try (Session session = factory.openSession()) {
+            transaction = session.beginTransaction();
+            session.createSQLQuery(DROP).executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Исключение:" + e);
         }
     }
 
@@ -60,7 +67,7 @@ public class UserDaoHibernateImpl implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException();
+            System.out.println("Исключение:" + e);
         }
     }
 
@@ -78,7 +85,7 @@ public class UserDaoHibernateImpl implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException();
+            System.out.println("Исключение:" + e);
         }
     }
 
@@ -94,7 +101,8 @@ public class UserDaoHibernateImpl implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException();
+            System.out.println("Исключение:" + e);
+            return null;
         }
     }
 
@@ -109,7 +117,7 @@ public class UserDaoHibernateImpl implements UserDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw new RuntimeException();
+            System.out.println("Исключение:" + e);
         }
     }
 }
