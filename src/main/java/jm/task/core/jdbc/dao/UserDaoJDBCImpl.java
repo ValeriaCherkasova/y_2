@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
@@ -83,7 +84,7 @@ public class UserDaoJDBCImpl implements UserDao {
             return list;
         } catch (SQLException e) {
             System.out.println("Исключение:" + e);
-            return null;
+            return Collections.emptyList();
         }
     }
 

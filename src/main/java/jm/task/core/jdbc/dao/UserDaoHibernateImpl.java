@@ -6,9 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("JpaQlInspection")
@@ -102,7 +100,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 transaction.rollback();
             }
             System.out.println("Исключение:" + e);
-            return null;
+            return Collections.emptyList();
         }
     }
 
